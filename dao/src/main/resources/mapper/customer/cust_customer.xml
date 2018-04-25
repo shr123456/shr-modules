@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kexin.dkt.core.dao.customer.CustomerDao">
+    <resultMap id="ResultMap" type="com.kexin.dkt.core.entity.custcustomer.CustCustomer">
+        <id column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <!--<result column="parent_id" property="parent_id" jdbcType="VARCHAR"/>-->
+        <result column="customer_level_id" property="customerLevelId" jdbcType="VARCHAR"/>
+        <result column="customer_code" property="customerCode" jdbcType="VARCHAR"/>
+        <result column="customer_name" property="customerName" jdbcType="VARCHAR"/>
+        <result column="customer_trade" property="customerTrade" jdbcType="VARCHAR"/>
+        <result column="customer_conn_linker" property="customerConnLinker" jdbcType="VARCHAR"/>
+        <result column="customer_conn_dept" property="customerConnDept" jdbcType="VARCHAR"/>
+        <result column="customer_conn_tele" property="customerConnTele" jdbcType="VARCHAR"/>
+        <result column="area_id" property="areaId" jdbcType="VARCHAR"/>
+        <result column="customer_email" property="customerEmail" jdbcType="VARCHAR"/>
+        <result column="customer_abstract" property="customerAbstract" jdbcType="VARCHAR"/>
+        <result column="electricity_flag" property="electricityFlag" jdbcType="INTEGER"/>
+        <result column="customer_type" property="customerType" jdbcType="VARCHAR"/>
+        <result column="customer_status" property="customerStatus" jdbcType="INTEGER"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="modifier" property="modifier" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime" jdbcType="DATE"/>
+        <result column="customer_remark" property="customerRemark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="deleted" property="deleted" jdbcType="INTEGER"/>
+        <result column="ADDRESS_ID" property="addressId" jdbcType="VARCHAR"/>
+        <result column="pass" property="pass" jdbcType="INTEGER"/>
+        <result column="customer_logo" property="customerLogo" jdbcType="VARCHAR"/>
+        <result column="customer_fax" property="customerFax" jdbcType="VARCHAR"/>
+        <result column="CUSTOMER_ADDRESS" property="customerAddress" jdbcType="VARCHAR"/>
+        <result column="measure_methods" property="measureMethods" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--根据userid获取customerId和计量方式-->
+    <select id="findCustomerIdAndMeth" parameterType="com.kexin.dkt.core.entity.security.SecUser"
+            resultMap="ResultMap">
+        select cc.* from cust_customer cc
+        LEFT JOIN cust_user cu on cc.customer_id = cu.customer_id
+        LEFT JOIN sec_user su on su.USER_ID = cu.Sec_user_id
+        where cc.deleted = 0 and su.DELETED = 0 and su.ENABLED = 1 and cu.deleted = 0
+        and su.user_id = #{userId}
+    </select>
+
+    <select id="findMethByCustomerId" parameterType="java.lang.String"
+            resultMap="ResultMap">
+        select cc.* from cust_customer cc
+        where cc.customer_id = #{customerId}
+        and cc.deleted = 0
+    </select>
+
+    <select id="findCustomerList" parameterType="map"
+            resultType="map">
+        select customer_id,customer_name from cust_customer
+    </select>
+
+</mapper>

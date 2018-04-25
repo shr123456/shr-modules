@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.version.VersionDao">
+
+    <resultMap id="versionResultMap" type="com.kexin.dkt.core.entity.version.VersionMessage">
+        <id property="id" column="id" javaType="INTEGER" />
+        <result property="versionNum" column="version_num" jdbcType="VARCHAR"  />
+        <result property="versionType" column="version_type" javaType="INTEGER"/>
+        <result property="updateUrl" column="update_url" jdbcType="VARCHAR"  />
+        <result property="versionContent" column="version_content" jdbcType="VARCHAR"  />
+        <result property="createTime" column="create_time" javaType="DATE"/>
+    </resultMap>
+
+    <!--添加版本信息-->
+    <insert id="addVersionMessage" parameterType="com.kexin.dkt.core.entity.version.VersionMessage">
+        INSERT INTO version_message(version_num, version_type,update_url, version_content, create_time, deleted, remark)
+        VALUES (#{versionNum},#{versionType},#{updateUrl},#{versionContent},#{createTime},#{deleted},#{remark})
+    </insert>
+
+    <!--查询版本信息-->
+    <select id="findVersionMessage" parameterType="com.kexin.dkt.core.entity.version.VersionMessage"
+            resultMap="versionResultMap">
+        SELECT * from version_message WHERE
+        deleted = 0
+        <if test="id !=null and id !=0 " >
+            and id = #{id}
+        </if>
+        <if test="versionNum !=null and versionNum !='' " >
+            and version_num = #{versionNum}
+        </if>
+        <if test="versionType !=null and versionType !=0 " >
+            and version_type = #{versionType}
+        </if>
+    </select>
+
+    
+</mapper>

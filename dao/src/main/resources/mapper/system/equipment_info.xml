@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.equipment.EquipmentDao">
+
+    <resultMap id="ResultMap" type="com.kexin.dkt.core.entity.equipment.EquipmentCollectConfig">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="electrical_room_id" property="electricalRoomId" jdbcType="INTEGER"/>
+        <result column="cabinet_id" property="cabinetId" jdbcType="INTEGER"/>
+        <result column="meter_id" property="meterId" jdbcType="INTEGER"/>
+        <result column="collect_config_code" property="collectConfigCode" jdbcType="VARCHAR"/>
+        <result column="collect_config_name" property="collectConfigName" jdbcType="VARCHAR"/>
+        <result column="voltage_level" property="voltageLevel" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="rated_voltage" property="ratedVoltage" jdbcType="VARCHAR"/>
+        <result column="rated_current" property="ratedCurrent" jdbcType="VARCHAR"/>
+        <result column="rated_frequency" property="ratedFrequency" jdbcType="VARCHAR"/>
+        <result column="rated_capacity" property="ratedCapacity" jdbcType="VARCHAR"/>
+        <result column="factory_code" property="factoryCode" jdbcType="VARCHAR"/>
+        <result column="product_conformity" property="productConformity" jdbcType="VARCHAR"/>
+        <result column="make_time" property="makeTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="EquipmentGroupResult" type="com.kexin.dkt.core.entity.equipment.EquipmentGroup">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+    </resultMap>
+
+    <!--查询用户的设备配置-->
+    <select id="findEquipmentList" parameterType="java.lang.String"
+            resultMap="ResultMap">
+            select DISTINCT lp.* from sec_user su
+            ,cust_customer cc
+            ,cust_user cu
+            ,equipment_collect_config lp
+            where su.DELETED = 0
+            and su.ENABLED = 1
+            and lp.deleted = 0
+            and cu.deleted = 0
+            and cc.deleted = 0
+            and su.USER_ID = cu.sec_user_id
+            and lp.customer_id = cu.customer_id
+            and ((cc.measure_methods = 1 and lp.genre = 0) or( cc.measure_methods = 0 and lp.genre = 1) OR (cc.measure_methods = 2 AND lp.genre = 2))
+            and su.user_id = #{userId} ORDER BY lp.genre
+        </select>
+
+    <!-- 查询设备详情 -->
+    <select id="loadEquipmentDetail" parameterType="java.lang.Long"
+            resultType="map">
+        select c.collect_config_name AS collectConfigName,c.manufactor,c.version,c.make_time AS makeTime,IFNULL(c.photo_url,"") AS photoUrl,
+        c.rated_current as ratedCurrent,c.rated_voltage AS ratedVoltage,c.create_time AS createTime,m.ct,c.customer_id AS customerId from equipment_collect_config c
+        LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+        WHERE c.ID = #{id}
+    </select>
+
+    <select id="getDtoMeterAddressByLpId" parameterType="java.lang.Integer"
+            resultType="map">
+        select m.dtu_no AS dtuNo,m.meter_address AS meterAddress from equipment_collect_config c
+        LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+        where c.ID = #{id}
+    </select>
+
+    <!-- 查询设备分组-->
+    <select id="findEquipmentGroupList" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+            resultMap="EquipmentGroupResult">
+            select * from equipment_group where customer_id = #{customerId} and `delete` = 0
+    </select>
+
+    <!-- 查询分组的用电量-->
+    <select id="getGroupEnergy" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+            resultType="map">
+       select g.id,g.`name`,IFNULL(sum(cc.electric),0) AS electric
+from equipment_group g
+LEFT JOIN equipment_to_group t on t.group_id = g.id
+LEFT JOIN(select c.collect_config_name, SUM(d.diff_total_p_at_ee) electric,c.ID from equipment_collect_config c
+      LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+      LEFT JOIN kxtimingdata.collect_total_p_at_ee_day d on d.dtu_no = m.dtu_no and d.meter_address = m.meter_address
+      where c.customer_id = #{customerId}
+      and d.collect_date LIKE CONCAT('${collectDate}','%')
+      GROUP BY d.dtu_no, d.meter_address
+      ) cc on cc.ID = t.equipment_id
+		GROUP BY g.id ORDER BY electric desc  ,`name` ASC
+    </select>
+
+    <!--查询某分组详细信息 -->
+    <select id="queryEquipmentList" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+            resultType="map">
+        select cc.collect_config_name AS collectConfigName,cc.electric,t.checked
+        from equipment_to_group t,
+        (select c.collect_config_name, SUM(d.diff_total_p_at_ee) electric,c.ID from equipment_collect_config c
+              LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+              LEFT JOIN kxtimingdata.collect_total_p_at_ee_day d on d.dtu_no = m.dtu_no and d.meter_address = m.meter_address
+              where c.customer_id = #{customerId}
+              and d.collect_date LIKE CONCAT('${collectDate}','%')
+              GROUP BY d.dtu_no, d.meter_address
+              ) cc where t.group_id = #{id} and cc.id = t.equipment_id and t.checked= 1 ORDER BY electric desc ,collectConfigName ASC
+    </select>
+
+    <!-- 通过分组id查询设备需要带上标识-->
+    <select id="findEquipmentListByGroupId" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentGroup"
+            resultType="map" >
+       select c.collect_config_name AS name, IFNULL(t.checked,0) AS checked,c.ID from equipment_collect_config c
+    LEFT JOIN equipment_group g on g.customer_id = c.customer_id
+    LEFT JOIN equipment_to_group t on g.id = t.group_id and c.ID = t.equipment_id
+    where g.id = #{id} ORDER BY t.checked DESC,name ASC;
+    </select>
+
+    <select id="equipmentIdList" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        select equipment_id from equipment_to_group
+        where group_id = #{groupId} and `delete` = 0
+    </select>
+
+    <!-- 根据id查询设备分组-->
+    <select id="findEquipmentGroupById" parameterType="java.lang.Integer"
+            resultMap="EquipmentGroupResult" >
+        select * from equipment_group where id = #{id}
+    </select>
+
+    <!-- 修改分组信息-->
+    <update id="updateEquipmentGroup" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentGroup">
+        UPDATE equipment_group SET update_time = #{updateTime}, creator = #{creator} WHERE id = #{id} and `delete` = 0
+    </update>
+
+    <!-- 新建分组信息-->
+    <insert id="addEquipmentGroup" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentGroup"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO equipment_group(`name`,customer_id,creator,create_time,update_time,`delete`,remark)
+        VALUES(#{name},#{customerId},#{creator},#{createTime},#{updateTime},0,#{remark})
+    </insert>
+
+    <!-- 删除分组信息-->
+    <delete id="deleteEquipmentGroup" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentGroup">
+        DELETE FROM equipment_group where id = #{id}
+    </delete>
+
+    <!-- 新建设备分组中间表信息-->
+    <insert id="addEquipmentToGroup" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentToGroup">
+        INSERT INTO equipment_to_group(group_id,equipment_id,create_time,checked,creator,`delete`)
+        VALUES(#{groupId},#{equipmentId},#{createTime},#{checked},#{creator},0)
+    </insert>
+
+    <!-- 删除设备分组中间表信息-->
+    <delete id="deleteEquipmentToGroup" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentGroup">
+       DELETE FROM equipment_to_group where group_id = #{id}
+    </delete>
+
+</mapper>

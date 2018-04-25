@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.system.UserDao">
+
+    <!--<resultMap id="UserResultMap" type="com.kexin.dkt.core.entity.system.SecUser">-->
+    <!--<id column="ID" property="id" jdbcType="INTEGER"/>-->
+    <!--<result column="NAME" property="name" jdbcType="VARCHAR"/>-->
+    <!--<result column="SEX" property="sex" jdbcType="INTEGER"/>-->
+    <!--<result column="AGE" property="age" jdbcType="INTEGER"/>-->
+    <!--</resultMap>-->
+
+    <resultMap id="secUserMap" type="com.kexin.dkt.core.entity.security.SecUser">
+        <id column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT" property="account" jdbcType="VARCHAR"/>
+        <result column="BOSS_ACCOUNT" property="bossAccount" jdbcType="VARCHAR"/>
+        <result column="SHUYE_ACOUNT" property="shuyeAcount" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="ACC_TYPE" property="accType" jdbcType="VARCHAR"/>
+        <result column="DEPT_ID" property="deptId" jdbcType="VARCHAR"/>
+        <result column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR"/>
+        <result column="EMAIL" property="email" jdbcType="VARCHAR"/>
+        <result column="MOBILE" property="mobile" jdbcType="VARCHAR"/>
+        <result column="BRANCH_ID" property="branchId" jdbcType="VARCHAR"/>
+        <result column="DYNA_SALT" property="dynaSalt" jdbcType="VARCHAR"/>
+        <result column="POSITION" property="position" jdbcType="VARCHAR"/>
+        <result column="ALIAS" property="alias" jdbcType="VARCHAR"/>
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+        <!--<result column="CREATE_TIME" property="createTime" jdbcType="datetime"/>-->
+        <result column="MODIFIER_ID" property="modifierId" jdbcType="VARCHAR"/>
+        <!--<result column="MODIFY_TIME" property="modifyTime" jdbcType="datetime"/>-->
+    </resultMap>
+
+    <resultMap id="userParamMap" type="com.kexin.dkt.core.entity.vo.UserParam">
+        <id column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT" property="account" jdbcType="VARCHAR"/>
+        <result column="BOSS_ACCOUNT" property="bossAccount" jdbcType="VARCHAR"/>
+        <result column="SHUYE_ACOUNT" property="shuyeAcount" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="ACC_TYPE" property="accType" jdbcType="VARCHAR"/>
+        <result column="DEPT_ID" property="deptId" jdbcType="VARCHAR"/>
+        <result column="CHANNEL_ID" property="channelId" jdbcType="VARCHAR"/>
+        <result column="EMAIL" property="email" jdbcType="VARCHAR"/>
+        <result column="MOBILE" property="mobile" jdbcType="VARCHAR"/>
+        <result column="BRANCH_ID" property="branchId" jdbcType="VARCHAR"/>
+        <result column="DYNA_SALT" property="dynaSalt" jdbcType="VARCHAR"/>
+        <result column="POSITION" property="position" jdbcType="VARCHAR"/>
+        <result column="ALIAS" property="alias" jdbcType="VARCHAR"/>
+        <result column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+        <!--<result column="CREATE_TIME" property="createTime" jdbcType="datetime"/>-->
+        <result column="MODIFIER_ID" property="modifierId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="custUserMap" type="com.kexin.dkt.core.entity.custcustomer.CustUser">
+        <id column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="area_id" property="areaId" jdbcType="VARCHAR"/>
+        <result column="ADDRESS_ID" property="addressId" jdbcType="VARCHAR"/>
+        <result column="user_code" property="userCode" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="user_linker" property="userLinker" jdbcType="VARCHAR"/>
+        <result column="user_tele" property="userTele" jdbcType="VARCHAR"/>
+        <result column="bound_status" property="boundStatus" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="modifier" property="modifier" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="Sec_user_id" property="secUserId" jdbcType="VARCHAR"/>
+        <result column="head_image" property="headImage" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="TIMESTAMP"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="deleted" property="deleted" jdbcType="INTEGER"/>
+        <result column="is_main" property="isMain" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 查询用户-->
+    <select id="getUser" parameterType="java.lang.String"
+            resultMap="secUserMap">
+        select *
+        from sec_user t
+        where deleted = 0 and ENABLED = 1
+        AND t.account =#{account}
+    </select>
+
+    <!-- 用户登陆-->
+    <select id="login" parameterType="java.lang.String"
+            resultMap="userParamMap">
+        select su.*,cu.head_image AS headImage from sec_user su
+        LEFT JOIN cust_user cu on cu.Sec_user_id = su.USER_ID
+        where su.deleted = 0 and su.ENABLED = 1 and su.DELETED = 0 and su.ENABLED = 1
+        and su.ACCOUNT = #{account} and su.`PASSWORD` = #{password}
+    </select>
+
+    <!-- 查询账户-->
+    <select id="getUserById" parameterType="java.lang.String"
+            resultMap="secUserMap">
+        select *
+        from sec_user t
+        where t.user_id =#{userId}
+    </select>
+    <!-- 查询用户-->
+    <select id="getCustUserById" parameterType="java.lang.String"
+            resultMap="custUserMap">
+        select *
+        from cust_user t
+        where t.sec_user_id =#{userId}
+    </select>
+
+    <update id="updateNickNameToSec" parameterType="com.kexin.dkt.core.entity.security.SecUser">
+        update sec_user set user_name = #{userName} where user_id = #{userId}
+    </update>
+    <update id="updateNickNameToCust" parameterType="com.kexin.dkt.core.entity.security.SecUser">
+        update cust_user set user_name = #{userName} where sec_user_id = #{userId}
+    </update>
+    <update id="updatePassword" parameterType="com.kexin.dkt.core.entity.security.SecUser">
+        update sec_user set password = #{password} where user_id = #{userId}
+    </update>
+</mapper>

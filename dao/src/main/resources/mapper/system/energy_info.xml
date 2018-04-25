@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.energy.EnergyDao">
+
+    <!--<resultMap id="UserResultMap" type="com.kexin.dkt.core.entity.system.SecUser">-->
+    <!--<id column="ID" property="id" jdbcType="INTEGER"/>-->
+    <!--<result column="NAME" property="name" jdbcType="VARCHAR"/>-->
+    <!--<result column="SEX" property="sex" jdbcType="INTEGER"/>-->
+    <!--<result column="AGE" property="age" jdbcType="INTEGER"/>-->
+    <!--</resultMap>-->
+
+    <!--通过用户名获取当前监控设备数量-->
+    <select id="findEquipmentCount" parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        select count(lp.id) from equipment_collect_config lp
+        where lp.customer_id = #{customerId}
+        and lp.deleted = 0
+        </select>
+
+    <!--获取公司名称-->
+    <select id="findCustomerName" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        select cc.customer_name from cust_customer cc
+        where cc.customer_id = #{customerId}
+    </select>
+
+    <!--获取当天峰/谷/平的电量-->
+    <select id="findEnergyByDay" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        select sum(ctd.diff_total_p_at_ee) as sumElectric,
+        sum(ctd.peak_total_p_at_ee) as peakElectric,
+        sum(ctd.valley_total_p_at_ee) as valleyElectric,
+        sum(ctd.flat_total_p_at_ee) as flatElectric
+        from equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig on lp.meter_id=fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_day ctd on ctd.dtu_no = fig.dtu_no
+        and ctd.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        <if test="lpId == 0">
+            and lp.genre = #{genre}
+        </if>
+        and lp.deleted = 0
+        and fig.tag = 0
+        and ctd.collect_date BETWEEN #{firstDate} and #{endDate}
+        <if test="lpId != 0">
+            and lp.id = #{lpId}
+        </if>
+    </select>
+
+    <!--获取每天峰/谷/平的电量-->
+    <select id="findEnergyByDayList" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        select sum(ctd.diff_total_p_at_ee) as sumElectric,
+        sum(ctd.peak_total_p_at_ee) as peakElectric,
+        sum(ctd.valley_total_p_at_ee) as valleyElectric,
+        sum(ctd.flat_total_p_at_ee) as flatElectric,
+        ctd.collect_date as collectDate
+        from equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig on lp.meter_id=fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_day ctd on ctd.dtu_no = fig.dtu_no
+        and ctd.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        <if test="lpId == 0">
+            and lp.genre = #{genre}
+        </if>
+        and lp.deleted = 0
+        and fig.tag = 0
+        and ctd.collect_date BETWEEN #{firstDate} and #{endDate}
+        <if test="lpId != 0">
+            and lp.id = #{lpId}
+        </if>
+        GROUP BY ctd.collect_date ORDER BY ctd.collect_date ASC
+    </select>
+
+    <!--获取每月中每天最大小时用电量的集合-->
+    <select id="findMaxEnergyByDayList" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        select ccc.collect_date AS dateStr,max(ccc.maxTotal) AS maxTotal from (
+        SELECT t.dtu_no,
+        t.meter_address,
+        DATE_FORMAT(t.collect_date, '%Y-%m-%d') AS collect_date,
+        t.diff_total_p_at_ee AS maxTotal
+        FROM
+        kxtimingdata.collect_total_p_at_ee_hour t,
+        equipment_collect_config lp,
+        equipment_meter_config fig
+        where lp.meter_id = fig.id and fig.dtu_no = t.dtu_no and fig.meter_address = t.meter_address and lp.genre = #{genre}
+        and lp.deleted = 0 and lp.customer_id = #{customerId} and t.collect_date BETWEEN #{firstDate} and #{endDate}
+        <if test="lpId != 0">
+            and lp.id = #{lpId}
+        </if>
+        <if test="lpId == 0">
+            and lp.genre = #{genre}
+        </if>
+        GROUP BY
+        collect_date) ccc
+        GROUP BY ccc.collect_date
+    </select>
+
+    <!-- 使用小时表查询每天的用电量 -->
+    <select id="findElectricByDay" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        select ccc.collect_date AS collectDate,sum(ccc.electric) AS sumElectric from (
+        SELECT t.dtu_no,
+        t.meter_address,
+        DATE_FORMAT(t.collect_date, '%Y-%m-%d') AS collect_date,
+        t.diff_total_p_at_ee AS electric
+        FROM
+        kxtimingdata.collect_total_p_at_ee_hour t,
+        equipment_collect_config lp,
+        equipment_meter_config fig
+        where lp.meter_id = fig.id and fig.dtu_no = t.dtu_no and fig.meter_address = t.meter_address
+        and lp.deleted = 0 and lp.customer_id = #{customerId} and t.collect_date LIKE CONCAT(#{firstDate},'%')
+        <if test="lpId != 0">
+            and lp.id = #{lpId}
+        </if>
+        <if test="lpId == 0">
+            and lp.genre = #{genre}
+        </if>
+        GROUP BY collect_date) ccc
+        GROUP BY ccc.collect_date
+    </select>
+
+    <!--获取当月峰/谷/平的电量-->
+    <select id="findAllEnergyByMonth" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        SELECT
+        sum(ctd.diff_total_p_at_ee) AS sumElectric,
+        sum(ctd.peak_total_p_at_ee) AS peakElectric,
+        sum(ctd.valley_total_p_at_ee) AS valleyElectric,
+        sum(ctd.flat_total_p_at_ee) AS flatElectric
+        FROM
+        equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig ON lp.meter_id = fig.id
+            LEFT JOIN kxtimingdata.collect_total_p_at_ee_day ctd ON ctd.dtu_no = fig.dtu_no
+        AND ctd.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.deleted = 0
+        and fig.tag = 0
+        and ctd.collect_date BETWEEN  #{firstDate} and #{endDate}
+        <if test="groupId == 0">
+            <if test="lpId == 0 ">
+                and lp.genre = #{genre}
+            </if>
+            <if test="lpId != 0">
+                and lp.id = #{lpId}
+            </if>
+        </if>
+
+        <if test="groupId != 0 and idList !=null" >
+            and lp.id IN
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="groupId != 0 and idList ==null">
+            and lp.id = 0
+        </if>
+    </select>
+
+    <!--根据时间段获取月度最大负载-->
+    <select id="getMaxLoad" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="java.lang.Double">
+        select max(cth.diff_total_p_at_ee) AS maxElectric
+        from equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig on lp.meter_id=fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_hour cth on cth.dtu_no = fig.dtu_no
+        and cth.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.deleted = 0
+        and fig.tag = 0
+        <if test="groupId == 0">
+            <if test="lpId == 0 ">
+                and lp.genre = #{genre}
+            </if>
+            <if test="lpId != 0">
+                and lp.id = #{lpId}
+            </if>
+        </if>
+        <if test="groupId != 0 and idList !=null" >
+            and lp.id IN
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="groupId != 0 and idList ==null">
+            and lp.id = 0
+        </if>
+        and cth.collect_date BETWEEN #{firstDate} and #{endDate}
+    </select>
+
+    <!--根据时间段获取月度最小负载-->
+    <select id="getMinLoad" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="java.lang.Double">
+        select min(cth.diff_total_p_at_ee) AS minElectric
+        from equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig on lp.meter_id=fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_hour cth on cth.dtu_no = fig.dtu_no
+        and cth.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.deleted = 0
+        and fig.tag = 0
+        <if test="groupId == 0">
+            <if test="lpId == 0 ">
+                and lp.genre = #{genre}
+            </if>
+            <if test="lpId != 0">
+                and lp.id = #{lpId}
+            </if>
+        </if>
+        <if test="groupId != 0 and idList !=null" >
+            and lp.id IN
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="groupId != 0 and idList ==null">
+            and lp.id = 0
+        </if>
+        and cth.collect_date BETWEEN #{firstDate} and #{endDate}
+    </select>
+
+    <!--根据时间段获取月度平均负载-->
+    <select id="getAvgLoad" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="java.lang.Double">
+        select avg(cth.diff_total_p_at_ee) AS avgElectric
+        from equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig on lp.meter_id=fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_hour cth on cth.dtu_no = fig.dtu_no
+        and cth.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.deleted = 0
+        and fig.tag = 0
+        <if test="groupId == 0">
+            <if test="lpId == 0 ">
+                and lp.genre = #{genre}
+            </if>
+            <if test="lpId != 0">
+                and lp.id = #{lpId}
+            </if>
+        </if>
+
+        <if test="groupId != 0 and idList !=null" >
+            and lp.id IN
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="groupId != 0 and idList ==null">
+            and lp.id = 0
+        </if>
+        and cth.collect_date BETWEEN #{firstDate} and #{endDate}
+    </select>
+
+    <!--根据时间段获取变压器容量-->
+    <select id="getTransCapacity" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="java.lang.Integer">
+        select sum(et.rated_capacity) from equipment_transformer et
+        where et.deleted = 0 and et.used = 0
+        AND et.customer_id = #{customerId}
+    </select>
+
+    <!--获取当前月的时间数组-->
+    <select id="getMonthTimes" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        SELECT RepDate AS collectDate FROM req_date
+        where repDate BETWEEN #{firstDate} and #{endDate}
+        ORDER BY repDate;
+    </select>
+
+    <select id="findEnergyByBeforeMonth" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        SELECT
+        sum(ctm.diff_total_p_at_ee) AS sumElectric
+        FROM
+        equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig ON lp.meter_id = fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_month ctm ON ctm.dtu_no = fig.dtu_no
+        AND ctm.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.genre = #{genre}
+        and lp.deleted = 0
+        and fig.tag = 0
+        and ctm.collect_date BETWEEN #{firstDate} and #{endDate}
+    </select>
+
+
+    <!--获取年中每月峰/谷/平的电量集合-->
+    <select id="findEnergyByYear" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        select ccc.collect_date AS dateStr,
+        sum(ccc.sumElectric) AS sumElectric,
+        sum(ccc.peakElectric) AS peakElectric,
+        sum(ccc.valleyElectric) AS valleyElectric,
+        sum(ccc.flatElectric) AS flatElectric
+         from (
+        SELECT
+				DATE_FORMAT(ctd.collect_date, '%Y-%m') AS collect_date,
+        ctd.diff_total_p_at_ee AS sumElectric,
+        ctd.peak_total_p_at_ee AS peakElectric,
+        ctd.valley_total_p_at_ee AS valleyElectric,
+        ctd.flat_total_p_at_ee AS flatElectric
+        FROM
+        equipment_collect_config lp
+        LEFT JOIN equipment_meter_config fig ON lp.meter_id = fig.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_day ctd ON ctd.dtu_no = fig.dtu_no
+        AND ctd.meter_address = fig.meter_address
+        where lp.customer_id = #{customerId}
+        and lp.genre = #{genre}
+        and lp.deleted = 0
+        and fig.tag = 0
+        and ctd.collect_date LIKE CONCAT ('%',#{collectDate},'%')) ccc
+        GROUP BY ccc.collect_date ORDER BY ccc.collect_date
+    </select>
+</mapper>

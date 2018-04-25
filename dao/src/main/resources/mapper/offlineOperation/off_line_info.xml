@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.offlineOperation.OfflineOperationDao">
+
+
+    <!-- 保存离线工单信息 -->
+    <insert id="addOffLineOrder" parameterType="map"
+            useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO `off_line_order`(order_id,order_name,user_id,report_status,report_url,create_time,deleted)
+      VALUES(#{order_id},#{order_name},#{user_id},#{report_status},#{report_url},NOW(),0);
+
+    </insert>
+
+    <!-- 保存离线工作项信息 -->
+    <insert id="addWorkMessage" parameterType="map">
+      INSERT INTO off_line_work(z_id,equipment_type_name,work_content,status,error_message,create_time,deleted)
+      VALUES(#{z_id},#{equipment_type_name},#{work_content},#{status},#{error_message},NOW(),0)
+
+    </insert>
+
+    <!-- 查询离线工单列表 -->
+    <select id="findOffLineOrderList" parameterType="map"
+            resultType="map">
+      select olo.*,omo.service_type from off_line_order olo,operation_maintenance_order omo where olo.order_id = omo.order_id
+      and olo.user_id = #{user_id} AND omo.service_type = #{service_type} and olo.deleted = 0
+    </select>
+
+    <!-- 查询离线工单内容 -->
+    <select id="findOffLineContent" parameterType="map"
+            resultType="map">
+      select * from off_line_work where z_id = #{z_id} and deleted = 0
+    </select>
+
+    <!-- 查询离线工单详情 -->
+    <select id="findOffLineOrder" parameterType="map"
+            resultType="map">
+      select * from off_line_order where order_id = #{order_id} and deleted = 0
+    </select>
+
+    <!-- 修改离线工单 -->
+    <update id="updateOffLineOrder" parameterType="map">
+        UPDATE off_line_order SET report_status = #{report_status} ,report_url = #{report_url}
+        WHERE order_id = #{order_id}
+    </update>
+
+</mapper>

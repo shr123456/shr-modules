@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.echarts.EchartsDao">
+    <resultMap id="ResultMap" type="com.kexin.dkt.core.entity.collect.CollectTotalPAtEeDay">
+        <id column="dtu_no" property="dtuNo" jdbcType="VARCHAR"/>
+        <result column="meter_address" property="meterAddress" jdbcType="INTEGER"/>
+        <result column="collect_date" property="collectDate" jdbcType="DATE"/>
+        <result column="begin_total_p_at_ee" property="beginTotalPAtEe" jdbcType="DOUBLE"/>
+        <result column="end_total_p_at_ee" property="endTotalPAtEe" jdbcType="DOUBLE"/>
+        <result column="diff_total_p_at_ee" property="diffTotalPAtEe" jdbcType="DOUBLE"/>
+        <result column="peak_total_p_at_ee" property="peakTotalPAtEe" jdbcType="DOUBLE"/>
+        <result column="valley_total_p_at_ee" property="valleyTotalPAtEe" jdbcType="DOUBLE"/>
+        <result column="flat_total_p_at_ee" property="flatTotalPAtEe" jdbcType="DOUBLE"/>
+    </resultMap>
+    <!-- 某个设备某段时间数据-->
+    <select id="getOption" parameterType="com.kexin.dkt.core.entity.collect.CollectTotalPAtEeDay"
+            resultMap="ResultMap">
+           SELECT * from kxtimingdata.collect_total_p_at_ee_day
+           where dtu_no=#{dtuNo}
+           AND   meter_address=#{meterAddress}
+           and collect_date BETWEEN str_to_date(#{beginTime},'%Y-%m-%d') AND str_to_date(#{endTime},'%Y-%m-%d')
+    </select>
+    <!-- 某个设备某段时间数据-->
+    <select id="getOptionbyMonth" parameterType="com.kexin.dkt.core.entity.collect.CollectTotalPAtEeDay"
+            resultMap="ResultMap">
+        SELECT date_format(tt.collect_date,'%y-%m-%d')  as collect_date,
+        SUM(tt.diff_total_p_at_ee) as diff_total_p_at_ee,
+        SUM(tt.peak_total_p_at_ee) as peak_total_p_at_ee,
+        SUM(tt.valley_total_p_at_ee) as valley_total_p_at_ee,
+        SUM(tt.flat_total_p_at_ee) as flat_total_p_at_ee
+        from
+         (SELECT * from kxtimingdata.collect_total_p_at_ee_day where
+          #{dtuAndMeterAressList}
+         and collect_date BETWEEN DATE_ADD(curdate(),interval -day(curdate())+1 day) + interval 0 MONTH
+         AND DATE_ADD(curdate(),interval -day(curdate())+1 day) + interval 1 MONTH
+        ) tt  group by date_format(tt.collect_date,'%y-%m-%d')
+    </select>
+</mapper>

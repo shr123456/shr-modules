@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.information.BasicRepositoryDao">
+
+    <resultMap id="basicReposotoryMap" type="com.kexin.dkt.core.entity.school.BasicRepository">
+        <id column="repository_id" property="repositoryId" jdbcType="VARCHAR"/>
+        <result column="repository_code" property="repositoryCode" jdbcType="VARCHAR"/>
+        <result column="repository_name" property="repositoryName" jdbcType="VARCHAR"/>
+        <result column="repository_remark" property="repositoryRemark" jdbcType="VARCHAR"/>
+        <result column="repository_pic_url" property="repositoryPicUrl" jdbcType="VARCHAR"/>
+        <result column="repository_video_url" property="repositoryVideoUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="repository_type" property="repositoryType" jdbcType="VARCHAR"/>
+        <result column="repository_type_id" property="repositoryTypeId" jdbcType="VARCHAR"/>
+        <result column="without_url" property="withoutUrl" jdbcType="VARCHAR"/>
+        <result column="video_time" property="videoTime" jdbcType="VARCHAR"/>
+        <!--<result column="audit_status" property="auditStatus" jdbcType="INTEGER"/>-->
+    </resultMap>
+
+    <!--获取方案信息，如无人托管/电力建设-->
+    <select id="loadSchemeinformation" parameterType="java.lang.String"
+            resultType="map">
+        select e.* from (select
+        cf.repository_id AS repositoryId,cf.repository_name AS repositoryName,cf.classify
+        from basic_repository cf
+        where cf.deleted = 0 and cf.audit_status = 4 and cf.repository_type = #{repositoryType} ORDER BY cf.create_time DESC)e GROUP BY e.repositoryName
+        </select>
+
+    <!--查询政策资讯/分页查询-->
+    <select id="findPolicyinformationByPage" parameterType="java.lang.String"
+            resultType="map">
+        select
+        cf.repository_id AS repositoryId,cf.repository_name AS repositoryName,cf.classify,sa.file_path AS repositoryPicUrl,cf.create_time AS createTime
+        from basic_repository cf
+        LEFT JOIN sys_accessory sa on cf.relation_id = sa.relation_id
+        where cf.deleted = 0 and sa.deleted = 0 and cf.audit_status = 4 and cf.repository_type = #{repositoryType} ORDER BY cf.create_time DESC
+        </select>
+
+    <!--查询内容详情-->
+    <select id="getInformationById" parameterType="java.lang.String"
+            resultMap="basicReposotoryMap">
+        select
+        cf.repository_id,cf.repository_code,cf.repository_name,cf.repository_remark,
+                cf.repository_video_url,cf.creator,cf.create_time,cf.repository_type,cf.repository_type_id,
+                cf.mainboby,cf.classify,cf.deleted,cf.origin,cf.without_url,cf.video_time,cf.hot,sa.file_path AS repository_pic_url
+        from basic_repository cf
+        LEFT JOIN sys_accessory sa on cf.relation_id = sa.relation_id
+        where cf.deleted = 0 and sa.deleted = 0 and cf.audit_status = 4 and cf.repository_id = #{repositoryId}
+        </select>
+
+</mapper>

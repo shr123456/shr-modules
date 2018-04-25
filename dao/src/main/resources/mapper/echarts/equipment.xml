@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.equipment.EquipmentMeterConfigDao">
+    <resultMap id="ResultMapConfig" type="com.kexin.dkt.core.entity.equipment.EquipmentMeterConfig">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="dtu_no" property="dtuNo" jdbcType="VARCHAR"/>
+        <result column="meter_address" property="meterAddress" jdbcType="INTEGER"/>
+        <result column="meter_type_no" property="meterTypeNo" jdbcType="VARCHAR"/>
+        <result column="pt" property="pt" jdbcType="INTEGER"/>
+        <result column="ct" property="ct" jdbcType="INTEGER"/>
+        <result column="tag" property="tag" jdbcType="INTEGER"/>
+        <result column="createuser" property="createuser" jdbcType="VARCHAR"/>
+        <result column="createdate" property="createdate" jdbcType="DATE"/>
+        <result column="changeuser" property="changeuser" jdbcType="VARCHAR"/>
+        <result column="changedate" property="changedate" jdbcType="DATE"/>
+        <result column="rowver" property="rowver" jdbcType="DATE"/>
+        <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="used" property="used" jdbcType="INTEGER"/>
+    </resultMap>
+    <!-- 查询某个用户拥有的dtu，meter_address-->
+    <select id="getMeterConfig" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentMeterConfig"
+            resultMap="ResultMapConfig">
+        SELECT fig.dtu_no,fig.meter_address from equipment_meter_config fig
+        LEFT JOIN equipment_collect_config lp ON lp.meter_id = fig.id
+        where lp.customer_id = #{customerId} and lp.genre = #{genre}
+        and lp.deleted = 0 and fig.tag = 0
+    </select>
+
+    <!-- 查询某个用户拥有的dtu，meter_address-->
+    <select id="getDtoMeterAddress" parameterType="com.kexin.dkt.core.entity.equipment.EquipmentMeterConfig"
+            resultMap="ResultMapConfig">
+       SELECT dtu_no,meter_address from equipment_meter_config
+        <!-- 查询单个设备 -->
+       <if test="collectConfigId !=0 ">
+        where id in (SELECT meter_id from equipment_collect_config WHERE id=#{collectConfigId})
+        </if>
+        <!-- 查询设备分组，分组中设备数量不为0 -->
+        <if test="collectConfigId ==0 and collectConfigIdList != null and collectConfigIdList.size>0">
+            where id in (SELECT meter_id from equipment_collect_config WHERE id in
+            <foreach item="item" index="index" collection="collectConfigIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <!-- 查询全部设备 -->
+        <if test="collectConfigId ==0 and collectConfigIdList == null">
+            where id in (SELECT meter_id from equipment_collect_config WHERE customer_id=#{customerId} and genre =#{genre})
+         </if>
+        <!-- 查询设备分组，分组中设备数量为0 -->
+         <if test="collectConfigId ==0 and collectConfigIdList != null and collectConfigIdList.size==0">
+             where id in (SELECT meter_id from equipment_collect_config WHERE id=0)
+         </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans.xsd
+	    http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context.xsd
+	    http://www.springframework.org/schema/aop
+	    http://www.springframework.org/schema/aop/spring-aop.xsd
+	    http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		">
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/login" />
+        <property name="successUrl" value="index" />
+        <property name="unauthorizedUrl" value="/common/403.jsp" />
+        <property name="filters">
+            <map>
+                <!--<entry key="authc" value-ref="authenticationFilter" />-->
+                <!--<entry key="logout" value-ref="logoutFilter" />-->
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /app/** = anon
+            </value>
+        </property>
+    </bean>
+
+
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="systemAuthorizingRealm" />
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <bean id="systemAuthorizingRealm" class="com.kexin.dkt.security.SystemAuthorizingRealm" />
+
+    <!-- 可以将指定方法返回值注入成为目标Bean的属性值 -->
+    <!--<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+		<property name="arguments" ref="securityManager" />
+	</bean>-->
+
+    <!-- <bean id="userSessionListener" class="com.snakerflow.framework.security.shiro.UserSessionListener" /> -->
+    <!-- 配置管理用户登录的session -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionValidationInterval" value="1800000"/><!-- 相隔多久检查一次session的有效性 -->
+        <property name="cacheManager" ref="shiroEhcacheManager"/>
+        <property name ="sessionListeners"><!--用户Session监听-->
+            <list>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 会话DAO，sessionManager里面的session需要保存在会话Dao里，没有会话Dao，session是瞬时的，没法从
+     sessionManager里面拿到session -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+    </bean>
+
+    <!-- 缓存管理器 -->
+    <bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:cache/ehcache-local.xml" />
+    </bean>
+
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="sid"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="-1"/>
+    </bean>
+
+    <!-- 会话ID生成器 -->
+    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+    <!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"   value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean>
+    <!-- Shiro生命周期处理器-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.echarts.SaleElectricityDao">
+
+  <resultMap id="SaleElectricityDoMap" type="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo">
+    <id column="ID" property="id" jdbcType="INTEGER"/>
+    <result column="electric" property="electric" jdbcType="VARCHAR"/>
+    <result column="collect_config_name" property="collectConfigName" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="SaleElectricityResultMap" type="com.kexin.dkt.core.entity.sale.SaleElectricity">
+    <id column="sale_electricity_id" property="saleElectricityId" jdbcType="VARCHAR"/>
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+    <result column="declare_year" property="declareYear" jdbcType="VARCHAR"/>
+    <result column="total_electric_year" property="totalElectricYear" jdbcType="DECIMAL"/>
+    <result column="divide_into_up_year" property="divideIntoUpYear" jdbcType="DECIMAL"/>
+    <result column="divide_into_down_year" property="divideIntoDownYear" jdbcType="DECIMAL"/>
+    <result column="total_electric_month" property="totalElectricMonth" jdbcType="DECIMAL"/>
+    <result column="divide_into_up_month" property="divideIntoUpMonth" jdbcType="DECIMAL"/>
+    <result column="divide_into_down_month" property="divideIntoDownMonth" jdbcType="DECIMAL"/>
+  </resultMap>
+
+  <resultMap id="SaleAssessmentMap" type="com.kexin.dkt.core.entity.sale.SaleAssessment">
+    <id column="ID" property="id" jdbcType="INTEGER"/>
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR"/>
+    <result column="ele_consumption" property="eleConsumption" jdbcType="DECIMAL"/>
+    <result column="power_purchase_value" property="powerPurchaseValue" jdbcType="DECIMAL"/>
+    <result column="asse_of_value" property="asseOfValue" jdbcType="DECIMAL"/>
+    <result column="client_earnings" property="clientEarnings" jdbcType="DECIMAL"/>
+    <result column="comson_earnings" property="comsonEarnings" jdbcType="DECIMAL"/>
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="SaleElectricityDetailedResultMap" type="com.kexin.dkt.core.entity.sale.SaleElectricityDetailed">
+    <id column="detailed_id" property="detailedId" jdbcType="INTEGER"/>
+    <result column="sale_electricity_id" property="saleElectricityId" jdbcType="VARCHAR"/>
+    <result column="declare_month" property="declareMonth" jdbcType="VARCHAR"/>
+    <result column="electricity_consum" property="electricityConsum" jdbcType="DECIMAL"/>
+    <result column="bidding_elctricity" property="biddingElctricity" jdbcType="DECIMAL"/>
+    <result column="bidding_spread" property="biddingSpread" jdbcType="DECIMAL"/>
+    <result column="long_elctricity" property="longElctricity" jdbcType="DECIMAL"/>
+    <result column="long_spread" property="longSpread" jdbcType="DECIMAL"/>
+  </resultMap>
+
+  <select id="getUseRanking" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo" resultMap="SaleElectricityDoMap">
+    select c.collect_config_name, SUM(d.diff_total_p_at_ee) electric from equipment_collect_config c
+      LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+      LEFT JOIN kxtimingdata.collect_total_p_at_ee_day d on d.dtu_no = m.dtu_no and d.meter_address = m.meter_address
+      where c.customer_id = #{customerId}
+      and d.collect_date LIKE #{collectDate}
+      <if test="genre != null">
+        and c.genre = #{genre}
+      </if>
+      GROUP BY d.dtu_no, d.meter_address
+      ORDER BY electric desc
+  </select>
+  
+  <select id="loadElectricByCustomer" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo" resultMap="SaleElectricityDoMap">
+    select SUM(d.diff_total_p_at_ee) electric from equipment_collect_config e
+      LEFT JOIN equipment_meter_config m on e.meter_id = m.id
+      LEFT JOIN kxtimingdata.collect_total_p_at_ee_day d on m.dtu_no = d.dtu_no and m.meter_address = d.meter_address
+      where e.genre = #{genre}
+          and e.customer_id = #{customerId}
+          and d.collect_date LIKE #{collectDate}
+  </select>
+
+  <insert id="saveSaleElectric" parameterType="com.kexin.dkt.core.entity.sale.CustSaleElectric"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO cust_sale_electric
+    (customer_id, buy_electric_volume, message, create_time)
+    VALUES
+    (
+    #{customerId,jdbcType=VARCHAR},#{buyElectricVolume,jdbcType=VARCHAR},#{message,jdbcType=VARCHAR},NOW()
+    )
+  </insert>
+
+  <!--<select id="findSaleAssessmentByYear" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"-->
+          <!--resultMap="SaleAssessmentMap">-->
+      <!--select * from sale_assessment sa-->
+    <!--where sa.time like CONCAT("%", #{collectDate},"%") AND-->
+    <!--sa.customer_id = #{customerId}-->
+    <!--ORDER BY sa.time-->
+  <!--</select>-->
+
+  <select id="findSaleAssessment" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+          resultMap="SaleElectricityDetailedResultMap">
+    select sed.* from sale_electricity se
+    LEFT JOIN sale_electricity_detailed sed on se.sale_electricity_id = sed.sale_electricity_id
+    where se.customer_id = #{customerId} and se.tag = 0 and sed.tag = 0 and "${endDate}" like CONCAT('',sed.declare_month,'%')
+  </select>
+
+  <!-- 查询月度购电量与价差 -->
+  <select id="findSaleElectricityDetailed" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+          resultMap="SaleElectricityDetailedResultMap">
+    select sed.* from sale_electricity se
+    LEFT JOIN sale_electricity_detailed sed on se.sale_electricity_id = sed.sale_electricity_id
+    where se.customer_id = #{customerId} and se.tag = 0 and sed.tag = 0 and sed.declare_month = #{collectDate}
+  </select>
+
+  <!-- 查询月度购电量与价差集合 -->
+  <select id="findSaleElectricityDetailedList" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+          resultMap="SaleElectricityDetailedResultMap">
+    select sed.* from sale_electricity se
+    LEFT JOIN sale_electricity_detailed sed on se.sale_electricity_id = sed.sale_electricity_id
+    where se.customer_id = #{customerId} and se.tag = 0 and sed.tag = 0 and sed.declare_month LIKE CONCAT(#{collectDate},'%')
+  </select>
+
+  <!-- 查询月度分成比例 -->
+  <select id="findSaleElectricity" parameterType="com.kexin.dkt.core.entity.echarts.sale.SaleElectricityDo"
+          resultMap="SaleElectricityResultMap">
+    select * from sale_electricity where customer_id = #{customerId} and tag = 0 and declare_year = #{collectDate}
+  </select>
+
+</mapper>

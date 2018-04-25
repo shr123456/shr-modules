@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.monitoring.MonitoringDao">
+
+    <resultMap id="collectBaseInfoResultMap" type="com.kexin.dkt.core.entity.collect.CollectBaseInfo">
+        <result column="collect_time" property="collectTime" jdbcType="DATE"/>
+        <result column="dtu_no" property="dtu_no" jdbcType="VARCHAR"/>
+        <result column="meter_address" property="meterAddress" jdbcType="INTEGER"/>
+        <result column="a_electricity" property="aElectricity" jdbcType="DECIMAL"/>
+        <result column="b_electricity" property="bElectricity" jdbcType="DECIMAL"/>
+        <result column="c_electricity" property="cElectricity" jdbcType="DECIMAL"/>
+        <result column="a_power_factor" property="aPowerFactor" jdbcType="DECIMAL"/>
+        <result column="b_power_factor" property="bPowerFactor" jdbcType="DECIMAL"/>
+        <result column="c_power_factor" property="cPowerFactor" jdbcType="DECIMAL"/>
+        <result column="total_power_factor" property="totalPowerFactor" jdbcType="DECIMAL"/>
+        <result column="total_p_at_ee" property="totalPAtEe" jdbcType="DECIMAL"/>
+        <result column="total_r_at_ee" property="totalRAtEe" jdbcType="DECIMAL"/>
+        <result column="total_ap_a_ee" property="totalApAEe" jdbcType="DECIMAL"/>
+        <result column="total_ap_reat_ee" property="totalApReatEe" jdbcType="DECIMAL"/>
+        <result column="a_voltage" property="aVoltage" jdbcType="DECIMAL"/>
+        <result column="b_voltage" property="bVoltage" jdbcType="DECIMAL"/>
+        <result column="c_voltage" property="cVoltage" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <!-- 设备用电排名 -->
+    <select id="getEquipmentElectricRanking" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="map">
+        select c.id ,h.meter_address AS meterAddress,h.dtu_no AS dtuNo,c.collect_config_name as collectConfigName,
+        IFNULL(sum(h.diff_total_p_at_ee),0) as electric
+        from equipment_collect_config c
+        LEFT JOIN equipment_meter_config m on c.meter_id = m.id
+        LEFT JOIN kxtimingdata.collect_total_p_at_ee_hour h on h.dtu_no = m.dtu_no and h.meter_address = m.meter_address
+        where h.collect_date like CONCAT(#{endDate},'%')
+        and c.customer_id = #{customerId}
+        GROUP BY h.dtu_no, h.meter_address
+        ORDER BY electric desc
+    </select>
+
+    <!-- 根据dtu与meter_address查询设备实时信息 -->
+    <select id="findEquipmentRuntime" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="map">
+        select
+        IFNULL(cbi.a_electricity,0) AS aElectricity,IFNULL(cbi.b_electricity,0) AS bElectricity,IFNULL(cbi.c_electricity,0) AS cElectricity,
+                IFNULL(cbi.total_power_factor,0) AS totalPowerFactor,IFNULL(cbi.a_voltage,0) AS aVoltage,cbi.collect_time AS collectTime,
+                IFNULL(cbi.b_voltage,0) AS bVoltage,IFNULL(cbi.c_voltage,0) AS cVoltage,IFNULL(cbi.total_active_power,0) AS totalActivePower
+        from ${table} cbi where cbi.dtu_no = #{dtuNo} and cbi.meter_address = #{meterAddress}
+        ORDER BY collect_time DESC LIMIT 1
+    </select>
+
+    <!-- 查询dtu与地址在一天内的电量-->
+    <select id="findEnergyRunTime" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="com.kexin.dkt.core.entity.vo.ElecQuantity">
+        <!-- 查询电量 -->
+        select collect_date AS dateStr,diff_total_p_at_ee AS sumElectric from kxtimingdata.collect_total_p_at_ee_hour
+        where collect_date LIKE CONCAT(#{endDate},'%') and dtu_no = #{dtuNo} and meter_address = #{meterAddress}
+
+    </select>
+
+    <!-- 查询dtu与地址在一天内的三相电压-->
+    <select id="findVoltageRunTime" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultMap="collectBaseInfoResultMap">
+        <!-- 查询三相电压数据 -->
+        select collect_time,IFNULL(a_voltage,0) AS a_voltage,IFNULL(b_voltage,0) AS b_voltage,IFNULL(c_voltage,0) AS c_voltage
+        from ${table}
+        WHERE dtu_no =  #{dtuNo} and meter_address = #{meterAddress}
+    </select>
+
+    <!-- 查询dtu与地址在一天内的三相电流-->
+    <select id="findElectricityRunTime" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultMap="collectBaseInfoResultMap">
+        <!-- 查询三相电流数据 -->
+        select collect_time,IFNULL(a_electricity,0) AS a_electricity,IFNULL(b_electricity,0) AS b_electricity,IFNULL(c_electricity,0) AS c_electricity
+        from ${table}
+        WHERE dtu_no =  #{dtuNo} and meter_address = #{meterAddress}
+    </select>
+
+    <!-- 查询dtu与地址在一天内的总功率因素-->
+    <select id="findPowerFactorRunTime" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultMap="collectBaseInfoResultMap">
+        <!-- 查询总功率因素 -->
+        select collect_time,total_power_factor from ${table}
+        WHERE dtu_no =  #{dtuNo} and meter_address = #{meterAddress}
+    </select>
+
+    <!-- 查询近一周的报表-->
+    <select id="findVoltageAndElec" parameterType="com.kexin.dkt.core.entity.vo.ParamDate"
+            resultType="map">
+       SELECT max(a_voltage) AS maxAVoltage,MAX(b_voltage) AS maxBVoltage,MAX(c_voltage) AS maxCVoltage,
+        MIN(a_voltage) AS minAVoltage,MIN(b_voltage) AS minBVoltage,MIN(c_voltage) AS minCVoltage,
+        max(a_electricity) AS maxAElectricity,MAX(b_electricity) AS maxBElectricity,MAX(c_electricity) AS maxCElectricity,
+        MIN(a_power_factor) AS minAPowerFactor,MIN(b_power_factor) AS minBPowerFactor,MIN(c_power_factor) AS minCPowerFactor
+        FROM ${table} where dtu_no = #{dtuNo} and meter_address = #{meterAddress}
+    </select>
+</mapper>

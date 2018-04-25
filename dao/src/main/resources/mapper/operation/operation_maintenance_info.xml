@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kexin.dkt.core.dao.operation.OperationMaintenanceDao">
+
+   <resultMap id="projectResultMap" type="com.kexin.dkt.core.entity.operation.OperationMaintenanceProject">
+        <result property="projectId" column="project_id" jdbcType="DECIMAL"  />
+        <result property="projectNo" column="project_no" jdbcType="VARCHAR"  />
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"  />
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"  />
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"  />
+        <result property="projectDetailAddress" column="project_detail_address" jdbcType="VARCHAR"  />
+        <result property="operProductsInspectionId" column="oper_products_inspection_id" jdbcType="INTEGER" />
+        <result property="equipmentInfo" column="equipment_info" jdbcType="VARCHAR"  />
+        <result property="salesmanId" column="salesman_id" jdbcType="VARCHAR"  />
+        <result property="ifFirst" column="if_first" jdbcType="DECIMAL"  />
+        <result property="signTime" column="sign_time" jdbcType="DATE"  />
+        <result property="startTime" column="start_time" jdbcType="DATE"  />
+        <result property="endTime" column="end_time" jdbcType="DATE"  />
+        <result property="receivedAmount" column="received_amount" jdbcType="DECIMAL"  />
+        <result property="serviceContent" column="service_content" jdbcType="DECIMAL"  />
+        <result property="inspectionCount" column="inspection_count" jdbcType="VARCHAR"  />
+        <result property="inspectionTime" column="inspection_time" jdbcType="DATE"  />
+        <result property="testCount" column="test_count" jdbcType="DECIMAL"  />
+        <result property="testTime" column="test_time" jdbcType="DATE"  />
+        <result property="areaId" column="area_id" jdbcType="VARCHAR"  />
+        <result property="maintain" column="maintain" jdbcType="DECIMAL"  />
+        <result property="maintainCount" column="maintain_count" jdbcType="DECIMAL"  />
+        <result property="maintainTime" column="maintain_time" jdbcType="DATE"  />
+        <result property="schemeOne" column="scheme_one" jdbcType="VARCHAR"  />
+        <result property="schemeTwo" column="scheme_two" jdbcType="VARCHAR"  />
+    </resultMap>
+
+    <resultMap id="orderResultMap" type="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder">
+        <result property="orderId" column="order_id" jdbcType="DECIMAL"  />
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"  />
+        <result property="projectId" column="project_id" jdbcType="DECIMAL"  />
+        <result property="orderProjectName" column="order_project_name" jdbcType="DECIMAL"  />
+        <result property="orderCode" column="order_code" jdbcType="VARCHAR"  />
+        <result property="projectDetailAddress" column="project_detail_address" jdbcType="VARCHAR"  />
+        <result property="equipmentInfo" column="equipment_info" jdbcType="VARCHAR"  />
+        <result property="serviceType" column="service_type" jdbcType="INTEGER"  />
+        <result property="salesmanPhone" column="salesman_phone" jdbcType="VARCHAR"  />
+        <result property="lastTime" column="last_time" jdbcType="DATE"  />
+        <result property="plannedTime" column="planned_time" jdbcType="DECIMAL"  />
+        <result property="engineerPhone" column="engineer_phone" jdbcType="VARCHAR"  />
+        <result property="orderType" column="order_type" jdbcType="DECIMAL"  />
+        <result property="updateTime" column="update_time" jdbcType="DATE"  />
+        <result property="workReportOne" column="work_report_one" jdbcType="VARCHAR"  />
+        <result property="workReportTwo" column="work_report_two" jdbcType="VARCHAR"  />
+        <result property="workReportThree" column="work_report_three" jdbcType="VARCHAR"  />
+        <result property="workReportTimeOne" column="work_report_time_one" jdbcType="DATE"  />
+        <result property="workReportTimeTwo" column="work_report_time_two" jdbcType="DATE"  />
+        <result property="workReportTimeThree" column="work_report_time_three" jdbcType="DATE"  />
+        <result property="photosBeforeWork" column="photos_before_work" jdbcType="DATE"  />
+        <result property="photosAtWork" column="photos_at_work" jdbcType="VARCHAR"  />
+        <result property="photosAfterWork" column="photos_after_work" jdbcType="VARCHAR"  />
+        <result property="photosProblem" column="photos_problem" jdbcType="VARCHAR"  />
+        <result property="cEvaluate" column="c_evaluate" jdbcType="VARCHAR"  />
+        <result property="cEvaluateTime" column="c_evaluate_time" jdbcType="DATE"  />
+        <result property="cEvaluateContent" column="c_evaluate_content" jdbcType="VARCHAR"  />
+        <result property="cEvaluateLevel" column="c_evaluate_level" jdbcType="VARCHAR"  />
+        <result property="dEvaluate" column="d_evaluate" jdbcType="VARCHAR"  />
+        <result property="operProductsId" column="oper_products_id" jdbcType="INTEGER"  />
+        <result property="dEvaluateTime" column="d_evaluate_time" jdbcType="DATE"  />
+        <result property="dEvaluateContent" column="d_evaluate_content" jdbcType="VARCHAR"  />
+        <result property="dEvaluateLevel" column="d_evaluate_level" jdbcType="VARCHAR"  />
+    </resultMap>
+
+    <resultMap id="SysAccessoryMap" type="com.kexin.dkt.core.entity.file.SysAccessory">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="relationId" column="relation_id" jdbcType="VARCHAR"/>
+        <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+        <result property="uploadTime" column="upload_time" jdbcType="DATE"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="fileSuffix" column="file_suffix" jdbcType="VARCHAR"/>
+        <result property="fileType" column="file_type" jdbcType="INTEGER"/>
+        <result property="busCode" column="bus_code" jdbcType="INTEGER"/>
+        <result property="busName" column="bus_name" jdbcType="VARCHAR"/>
+        <result property="uploadPersonId" column="upload_person_id" jdbcType="VARCHAR"/>
+        <result property="uploadPersonName" column="upload_person_name" jdbcType="VARCHAR"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 设备类型Map -->
+    <resultMap id="equipmentTypeMap" type="com.kexin.dkt.core.entity.operation.RoomEquipmentType">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="electricalRoomId" column="electrical_room_id" jdbcType="INTEGER"/>
+        <result property="equipmentTypeName" column="equipment_type_name" jdbcType="VARCHAR"/>
+        <result property="equipmentNumber" column="equipment_number" jdbcType="INTEGER"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="equipmentTypeStatus" column="equipment_type_status" jdbcType="INTEGER"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 设备Map -->
+    <resultMap id="equipmentMap" type="com.kexin.dkt.core.entity.operation.RoomEquipmentInfo">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="equipmentTypeId" column="equipment_type_id" jdbcType="INTEGER"/>
+        <result property="equipmentName" column="equipment_name" jdbcType="VARCHAR"/>
+        <result property="errorPhotoUrl" column="error_photo_url" jdbcType="VARCHAR"/>
+        <result property="errorMessage" column="error_message" jdbcType="VARCHAR"/>
+        <result property="adviceMessage" column="advice_message" jdbcType="VARCHAR"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 工作项Map -->
+    <resultMap id="workContentMap" type="com.kexin.dkt.core.entity.operation.EquipmentWorkContent">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="equipmentId" column="equipment_id" jdbcType="VARCHAR"/>
+        <result property="workProjectName" column="work_project_name" jdbcType="VARCHAR"/>
+        <result property="workProjectId" column="work_project_id" jdbcType="VARCHAR"/>
+        <result property="workProjectStauts" column="work_project_stauts" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 异常信息Map -->
+    <resultMap id="errorMessageMap" type="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="roomId" column="room_id" jdbcType="INTEGER"/>
+        <result property="equipmentTypeId" column="equipment_type_id" jdbcType="INTEGER"/>
+        <result property="equipmentId" column="equipment_id" jdbcType="INTEGER"/>
+        <result property="workProjectId" column="work_project_id" jdbcType="INTEGER"/>
+        <result property="errorPhoto" column="error_photo" jdbcType="VARCHAR"/>
+        <result property="errorMessage" column="error_message" jdbcType="VARCHAR"/>
+        <result property="adviceMessage" column="advice_message" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="workStatus" column="work_status" jdbcType="INTEGER"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 电房完成状态 -->
+    <resultMap id="roomFinishMap" type="com.kexin.dkt.core.entity.operation.ElectricRoomStatus">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="roomId" column="room_id" jdbcType="INTEGER"/>
+        <result property="finishStatus" column="finish_status" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+
+    <!-- 查询客户项目中执行某种任务的执行次数 -->
+    <select id="findTaskCount" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultType="java.lang.Integer">
+          select count(omo.order_id) from operation_maintenance_order omo
+          where omo.deleted = 0 and omo.service_type = #{serviceType}
+          and omo.order_type IN (3,4)
+           <if test="customerId !=null and customerId != ''">
+           and customer_id = #{customerId}
+           </if>
+    </select>
+
+    <!-- 查询客户项目中维护的次数 -->
+    <select id="findAllServiceCount" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultType="java.lang.Long">
+        select count(omo.order_id) from operation_maintenance_order omo, operation_maintenance_project omp
+        where omo.deleted = 0 and omp.deleted =0  and omp.customer_id = #{customerId} and omo.service_type = #{serviceType}
+        and omo.project_id = omp.project_id
+    </select>
+
+    <!-- -->
+    <select id="findServiceTypeNewTime" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultMap="orderResultMap">
+        select * from operation_maintenance_order where customer_id = #{customerId}
+        AND service_type = #{serviceType} AND order_type IN (3,4) ORDER BY planned_time DESC LIMIT 1
+    </select>
+
+    <!-- 查询某客户中的所有项目 -->
+    <select id="findAllProject" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultMap="projectResultMap">
+          select omp.* from operation_maintenance_project omp
+          where omp.deleted = 0 and omp.customer_id = #{customerId}
+    </select>
+
+    <!-- 条件查询某客户中的所有项目/并且结束时间大于今天日期+1个月 -->
+    <select id="findProjectListLike" parameterType="map"
+            resultMap="projectResultMap">
+          select omp.* from operation_maintenance_project omp
+          where omp.deleted = 0
+          <if test="queryValue != null and queryValue != ''">
+              and (omp.customer_name LIKE CONCAT('%',#{queryValue},'%') OR
+              omp.project_name LIKE CONCAT('%',#{queryValue},'%') OR omp.project_no LIKE CONCAT('%',#{queryValue},'%'))
+          </if>
+        AND omp.end_time > DATE_ADD(NOW(),interval 1 MONTH)
+        ORDER BY customer_name DESC
+    </select>
+
+    <!-- 根据项目id查询项目 -->
+    <select id="findProjectById" parameterType="java.lang.Integer"
+            resultMap="projectResultMap">
+          select omp.* from operation_maintenance_project omp
+          where omp.deleted = 0 and omp.project_id = #{projectId}
+    </select>
+
+    <!-- 查询客户中的项目的订单 -->
+    <select id="findOrderByServiceType" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultMap="orderResultMap">
+        select omo.* from operation_maintenance_order omo
+        where omo.deleted = 0 and omo.customer_id = #{customerId}
+        <if test="serviceType != 0">
+            and omo.service_type = #{serviceType}
+        </if>
+        <if test="orderType != 0">
+            and omo.order_type = #{orderType}
+        </if>
+        ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询订单列表 -->
+    <select id="queryOrderByType" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultMap="orderResultMap">
+        select omo.* from operation_maintenance_order omo
+        where omo.deleted = 0 and omo.customer_id = #{customerId}
+        <if test="orderType != 0">
+           and omo.order_type = #{orderType}
+        </if>
+        ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询订单详情 -->
+    <select id="queryOrderDetail" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultMap="orderResultMap">
+        select omo.* from operation_maintenance_order omo
+        where omo.deleted = 0 and omo.order_id = #{orderId}
+    </select>
+
+    <!-- 保存工单评论 -->
+    <insert id="saveOrderComment" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder" >
+        update operation_maintenance_order omo SET omo.c_evaluate_level = #{cEvaluateLevel},
+        omo.c_evaluate_content = #{cEvaluateContent}
+        where omo.order_id = #{orderId}
+    </insert>
+
+    <!-- 查询SysAccessory列表 -->
+    <select id="findFileList" parameterType="java.lang.String"
+            resultMap="SysAccessoryMap">
+        select * from sys_accessory sa where sa.relation_id = #{relationId}
+    </select>
+
+    <!-- 修改阅读状态-->
+    <update id="updateReadStatus" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder">
+        update operation_maintenance_order set read_status = 1 where order_id = #{orderId}
+    </update>
+
+    <!-- 查询某天的任务详情 -->
+    <select id="findTaskByOneDay" parameterType="map"
+            resultMap="orderResultMap">
+          select omo.order_id,omo.customer_id,omo.order_project_name,omo.operator,omo.order_code,omo.order_type,omo.planned_time,omo.project_id,omo.service_type
+           from operation_maintenance_order omo
+          where omo.deleted = 0
+          and omo.planned_time LIKE CONCAT(#{endTime},'%')
+        <if test="groupName !=null">
+           AND  omo.engineer = #{groupName}
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+           ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询本周的任务详情 -->
+    <select id="findTaskByWeek" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.order_id,omo.customer_id,omo.order_project_name,omo.operator,omo.order_code,omo.order_type,omo.planned_time,omo.project_id,omo.service_type
+         from operation_maintenance_order omo
+        where omo.deleted = 0
+        AND omo.planned_time >= #{firstTime} AND #{endTime} > omo.planned_time
+        <if test="groupName !=null">
+            AND omo.engineer = #{groupName}
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+         ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询本月的任务详情 -->
+    <select id="findTaskByMonth" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.order_id,omo.customer_id,omo.order_project_name,omo.operator,omo.order_code,omo.order_type,omo.planned_time,omo.project_id,omo.service_type
+         from operation_maintenance_order omo
+          where omo.deleted = 0
+          and omo.planned_time LIKE CONCAT(#{endTime},'%')
+        <if test="groupName !=null">
+          AND omo.engineer = #{groupName}
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+           ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询所有的任务详情 -->
+    <select id="findAllTask" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.order_id,omo.customer_id,omo.order_project_name,omo.operator,omo.order_code,omo.order_type,omo.planned_time,omo.project_id,omo.service_type
+         from operation_maintenance_order omo
+          where omo.deleted = 0
+        <if test="groupName !=null">
+            AND omo.engineer = #{groupName}
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+        ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询超时未完成的任务数量 -->
+    <select id="findOverTimeTaskCount" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(omo.order_id) orderId from operation_maintenance_order omo
+        where omo.deleted = 0
+        and omo.order_type NOT IN(3,4)
+        and omo.planned_time LIKE CONCAT(#{endTime},'%') and NOW() > omo.planned_time
+        <if test="groupName !=null and groupName !=''">
+            AND omo.engineer = #{groupName}
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+        and omo.planned_time NOT LIKE CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),'%')
+    </select>
+
+    <!-- 查询所有超时未完成的任务数量 -->
+    <select id="findAllOverTimeTaskCount" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(omo.order_id) orderId from operation_maintenance_order omo
+        where omo.deleted = 0
+        and omo.order_type NOT IN(3,4)
+        and NOW() > omo.planned_time
+        and omo.planned_time NOT LIKE CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),'%')
+    </select>
+
+    <!-- 查询超时未完成的任务 -->
+    <select id="findOverTimeTask" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.order_id,omo.customer_id,omo.order_project_name,omo.operator,omo.order_code,omo.order_type,omo.planned_time,omo.project_id,omo.service_type
+         from operation_maintenance_order omo
+        where omo.deleted = 0
+        and omo.order_type NOT IN(3,4)
+        and omo.planned_time LIKE CONCAT(#{endTime},'%') and NOW() > omo.planned_time
+        and omo.planned_time NOT LIKE CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),'%')
+        <if test="groupName !=null">
+            AND omo.engineer = #{groupName}
+        </if>
+        ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 查询每月完成的任务和总任务 -->
+    <select id="findDoneTaskByMonth" parameterType="map"
+            resultType="map">
+        select temp.PLANNED_TIME,SUM(temp.DONE) AS DONE,SUM(temp.SUM) AS SUM from (select DATE_FORMAT(PLANNED_TIME,'%e') AS PLANNED_TIME,
+        COUNT(CASE WHEN(ORDER_TYPE in (3,4)) THEN 1 END) AS DONE ,
+        COUNT(ORDER_TYPE) AS SUM
+        from operation_maintenance_order
+        where deleted = 0
+        <if test="groupName !=null">
+            AND engineer = #{groupName}
+        </if>
+         AND planned_time LIKE CONCAT(#{endTime},'%')
+        GROUP BY planned_time) temp GROUP BY temp.PLANNED_TIME ORDER BY temp.planned_time ASC
+    </select>
+
+    <!-- 查询时间集合 -->
+    <select id="getTimeList" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultType="map">
+        SELECT DATE_FORMAT(RepDate,'%e') AS PLANNED_TIME,0 AS DONE, 0 AS SUM FROM req_date
+        where repDate BETWEEN #{firstTime} and #{endTime}
+        ORDER BY repDate ASC
+    </select>
+
+    <!-- 查询客户某项目的工单列表 -->
+    <select id="findOrderListByProjectId" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultMap="orderResultMap">
+        select omo.* from operation_maintenance_order omo
+        where omo.deleted = 0
+        and omo.project_id = #{projectId}
+    </select>
+
+    <select id="findConstructionGroup" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultType="String">
+            select operation_group_name AS groupName from operation_maintenance_group GROUP BY operation_group_name
+    </select>
+
+    <!-- 查询分组成员带标识 -->
+    <select id="findConstructionGroupMember" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultType="map">
+                select tuser.userinfo_id AS userinfoId,IFNULL(tgroup.checked,0) AS checked,tuser.userinfo_name AS userinfoName from (
+        SELECT i.userinfo_name,i.userinfo_id
+                    FROM basic_user_info i
+                    LEFT JOIN
+                    sec_dept d
+                    ON i.DEPT_ID = d.DEPT_ID
+                    WHERE i.deleted = 0
+                    and d.DEPT_NAME = '电可托事业部') tuser
+        LEFT JOIN (select * from operation_maintenance_group
+        where operation_group_name = #{groupName})tgroup on tgroup.operation_group_engineer = tuser.userinfo_id
+        ORDER BY tgroup.checked DESC,tuser.userinfo_name ASC
+    </select>
+
+
+    <select id="findGroupMemberName" parameterType="map"
+            resultType="java.lang.String">
+        select i.userinfo_name AS userName from operation_maintenance_group g,basic_user_info i
+        where g.operation_group_name = #{groupName} and g.operation_group_engineer = i.userinfo_id
+        and g.deleted = 0 and i.deleted = 0
+    </select>
+
+    <!-- 删除班组分组 -->
+    <delete id="deleteConstructionGroup" parameterType="java.lang.String" >
+        delete from operation_maintenance_group where operation_group_name = #{groupName}
+    </delete>
+
+    <!-- 添加班组成员 -->
+    <insert id="addConstructionGroupMember" parameterType="map">
+        insert into operation_maintenance_group(operation_group_name,operation_group_engineer,operation_group_time,deleted)
+        values
+        <foreach item="item" index="index" collection="map.list" open="" separator="," close="">
+            (#{map.groupName},#{item},NOW(),0)
+        </foreach>
+    </insert>
+
+    <!-- 查询工单中的电房 -->
+    <select id="queryElectricRoomList" parameterType="com.kexin.dkt.core.entity.vo.OrderVo"
+            resultType="map">
+         select room.ID,room.electrical_room_name AS roomName,room.photo_url AS photoUrl
+         from electric_room_info room where room.customer_id = #{customerId} and deleted = 0
+    </select>
+
+    <!-- 根据id查询电房 -->
+    <select id="findElectricRoomById" parameterType="java.lang.Long"
+            resultType="map">
+         select room.ID,room.electrical_room_name AS roomName,room.photo_url AS photoUrl
+         from electric_room_info room where room.ID = #{roomId} AND deleted = 0
+    </select>
+
+    <!-- 查询工单中的电房完成状态 -->
+    <select id="findElectricRoomStatus" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomStatus"
+            resultType="java.lang.Integer">
+        select finish_status from electric_room_status
+        where order_id = #{orderId} and room_id = #{roomId} and deleted = 0
+    </select>
+
+    <!-- 查询工单中已完成电房列表 -->
+    <select id="findFinishRoomList" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultMap="roomFinishMap">
+        select * from electric_room_status
+        where order_id = #{orderId} and deleted = 0 AND finish_status = 1
+    </select>
+
+    <!-- 查询工单中的电房数量 -->
+    <select id="findElectricRoomStatusCount" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomStatus"
+            resultType="java.lang.Integer">
+        select count(id) from electric_room_status
+        where order_id = #{orderId} and room_id = #{roomId} and deleted = 0
+    </select>
+
+    <!-- 新增电房 -->
+    <insert id="addElectricRoom" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomInfo"
+            useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO electric_room_info(customer_id,electrical_room_name,creator,charger,photo_url,charge_tel,address,create_time,deleted)
+        VALUES(#{customerId},#{electricalRoomName},#{creator},#{charger},#{photoUrl},#{chargeTel},#{address},#{createTime},0)
+    </insert>
+
+    <!-- 修改电房 -->
+    <update id="updateElectricRoom" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomInfo">
+        UPDATE electric_room_info SET electrical_room_name = #{electricalRoomName} WHERE ID = #{id}
+    </update>
+
+    <!-- 删除电房 -->
+    <update id="deleteElectricRoom" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomInfo">
+          UPDATE electric_room_info SET deleted = 1 where id = #{id}
+    </update>
+
+    <!-- 删除电房状态数据 -->
+    <update id="deleteElectricRoomStatus" parameterType="com.kexin.dkt.core.entity.operation.ElectricRoomStatus">
+          UPDATE electric_room_status SET deleted = 1 where order_id = #{orderId} and room_id = #{roomId}
+    </update>
+
+    <!-- 查询设备类型列表集合 -->
+    <select id="findEquipmentTypeList" parameterType="map"
+            resultType="map">
+       select type.id,pwc.device_type_name AS serviceTypeName,
+    IFNULL(type.equipment_number,0) number from
+    (select device_type_name from oper_work_config where tag = 0 AND oper_products_id = #{operProductsId}
+           GROUP BY device_type_name  ORDER BY device_type_name ASC) pwc
+    LEFT JOIN room_equipment_type type on type.equipment_type_name = pwc.device_type_name
+    WHERE type.electrical_room_id = #{id} and deleted = 0
+    </select>
+
+    <!-- 查询设备分类,已选择为1,未选择为0 -->
+    <select id="findEquipmentTypeSelect" parameterType="map"
+            resultType="map">
+        select pwc.device_type_name AS serviceTypeName,IFNULL(type.checked,0) AS status from
+        (select device_type_name from oper_work_config where tag = 0 AND oper_products_id = #{operProductsId}
+               GROUP BY device_type_name  ORDER BY device_type_name ASC) pwc
+        LEFT JOIN (select *,1 AS checked  from room_equipment_type WHERE electrical_room_id = #{id} and deleted = 0)type
+        on type.equipment_type_name = pwc.device_type_name
+    </select>
+
+    <!-- 查询设备类型数量 -->
+    <select id="findEquipmentTypeCount" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentType"
+            resultType="java.lang.Integer">
+          select COUNT(ID) num from room_equipment_type where electrical_room_id = #{electricalRoomId}
+            and equipment_type_name = #{equipmentTypeName} and deleted = 0
+    </select>
+
+    <!-- 新增设备类型 -->
+    <insert id="addEquipmentType" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentType"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO room_equipment_type(electrical_room_id,equipment_type_name,equipment_number,creator,create_time,deleted)
+        VALUES(#{electricalRoomId},#{equipmentTypeName},#{equipmentNumber},#{creator},#{createTime},#{deleted})
+    </insert>
+
+    <!-- 修改设备类型-->
+    <update id="updateEquipmentType" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentType">
+        UPDATE room_equipment_type set equipment_number = #{equipmentNumber},
+        creator = #{creator},create_time = #{createTime} where ID = #{id}
+    </update>
+
+    <!-- 删除设备类型 -->
+    <update id="deleteEquipmentType" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentType">
+        UPDATE room_equipment_type set deleted = 1
+        where ID = #{id}
+    </update>
+
+    <!-- 新增图片信息-->
+    <insert id="addSysAccessory" parameterType="com.kexin.dkt.core.entity.file.SysAccessory">
+        INSERT INTO sys_accessory(relation_id,file_path,upload_time,file_name,file_suffix,file_type,deleted)
+        VALUES(#{relationId},#{filePath},#{uploadTime},#{fileName},#{fileSuffix},#{fileType},#{deleted})
+    </insert>
+
+    <!-- 新增图片信息-->
+    <insert id="updateSysAccessory" parameterType="com.kexin.dkt.core.entity.file.SysAccessory">
+        UPDATE sys_accessory SET file_name = #{fileName},file_type = #{fileType},file_path = #{filePath},
+        file_suffix = #{fileSuffix},upload_time = #{uploadTime} WHERE id = #{id}
+    </insert>
+
+    <!-- 修改工单信息 -->
+    <update id="updateOrderPhoto" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder">
+        UPDATE operation_maintenance_order SET photos_before_work =#{photosBeforeWork},
+        photos_at_work = #{photosAtWork},photos_after_work = #{photosAfterWork}
+        where order_id = #{orderId}
+    </update>
+
+    <!-- 删除SysAccessory表中的数据 -->
+    <insert id="deleteSysAccessory" parameterType="java.lang.String">
+        DELETE from sys_accessory where relation_id = #{relationId}
+    </insert>
+
+    <!-- 添加设备 -->
+    <insert id="addEquipment" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentInfo"
+        useGeneratedKeys="true" keyProperty="id">
+        insert INTO room_equipment_info(equipment_type_id,equipment_name,deleted)
+        VALUES(#{equipmentTypeId},#{equipmentName},#{deleted})
+    </insert>
+
+    <!-- 查询设备列表 -->
+    <select id="queryEquipmentList" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentType"
+            resultType="map">
+            select id,equipment_name AS equipmentName
+            from room_equipment_info where equipment_type_id = #{id} and deleted = 0
+    </select>
+
+    <!-- 删除设备 -->
+    <delete id="deleteEquipment" parameterType="java.lang.Long">
+           UPDATE room_equipment_info SET deleted = 1 WHERE ID = #{id}
+    </delete>
+
+    <!-- 修改设备 -->
+    <update id="updateEquipment" parameterType="com.kexin.dkt.core.entity.operation.RoomEquipmentInfo">
+        UPDATE room_equipment_info set equipment_name = #{equipmentName} where ID = #{id}
+    </update>
+
+    <!-- 查询设备 -->
+    <select id="findEquipmentById" parameterType="java.lang.Long"
+            resultMap="equipmentMap">
+        SELECT  * FROM room_equipment_info WHERE ID = #{equipmentId}
+    </select>
+
+    <!-- 通过设备类型id查询设备类型 -->
+    <select id="findEquipmentTypeById" parameterType="java.lang.Integer"
+            resultMap="equipmentTypeMap">
+        select * from room_equipment_type where ID = #{id}
+    </select>
+
+    <!-- 查询工作项列表 -->
+    <select id="queryWorkProjectList" parameterType="map"
+            resultMap="workContentMap">
+          select  opo.project_id AS id,opo.project_name AS work_project_name
+         from oper_work_config owc ,oper_project_option opo
+        where owc.oper_work_config_id = opo.oper_work_config_id and owc.device_type_name = #{equipmentTypeName}
+        and opo.tag = 0 and owc.tag = 0  and owc.oper_products_id = #{operProductsId}
+    </select>
+
+    <!-- 根据工作项id查询工作项 -->
+    <select id="queryWorkProjectById" parameterType="java.lang.Long"
+            resultType="map">
+          SELECT project_id AS projectId,project_name AS projectName FROM `oper_project_option` where project_id = #{workProjectId}
+    </select>
+
+    <!-- 查询异常数量 -->
+    <select id="findEquipmentErrorCount" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage"
+            resultType="java.lang.Integer">
+        select count(id) AS num FROM equipment_error_message
+        where  deleted = 0
+        <if test="orderId != 0">
+            and order_id = #{orderId}
+        </if>
+        <if test="roomId != 0">
+            and room_id = #{roomId}
+        </if>
+        <if test="equipmentTypeId != 0">
+            and equipment_type_id = #{equipmentTypeId}
+        </if>
+        <if test="equipmentId != 0">
+            and equipment_id = #{equipmentId}
+        </if>
+        <if test="workProjectId != 0">
+            and work_project_id = #{workProjectId}
+        </if>
+    </select>
+
+    <!-- 删除异常信息 -->
+    <update id="deleteErrorMessage" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage">
+        UPDATE equipment_error_message SET  deleted = 1
+        <where>
+            <if test="equipmentId != 0">
+                and equipment_id = #{equipmentId}
+            </if>
+            <if test="workProjectId != 0">
+                and work_project_id = #{workProjectId}
+            </if>
+        </where>
+    </update>
+
+    <!-- 查询设备类型完成状态 -->
+    <select id="findEquipmentTypeStatus" parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+        select finish_status from equipment_type_status
+        where order_id = #{orderId} and equipment_type_id = #{equipmentTypeId} and deleted = 0
+    </select>
+
+    <!-- 查询设备类型完成状态数量 -->
+    <select id="findEquipmentTypeStatusCount" parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+        select COUNT(id) from equipment_type_status
+        where order_id = #{orderId} and equipment_type_id = #{equipmentTypeId} and deleted = 0
+    </select>
+
+    <!-- 根据设备类型id删除工作项 -->
+    <update id="deleteEquipmentTypeStatus" parameterType="java.lang.Long">
+        UPDATE equipment_type_status SET deleted = 1 WHERE equipment_type_id = #{equipmentTypeId}
+    </update>
+
+    <!-- 查询最新一条记录 -->
+    <select id="findNewOrder" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder"
+            resultMap="orderResultMap">
+        select * from operation_maintenance_order
+        where service_type = #{serviceType} and order_type in (3,4)
+        and project_id = #{projectId} ORDER BY planned_time DESC LIMIT 1
+    </select>
+
+    <!-- 添加异常信息 -->
+    <insert id="addErrorMessage" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage">
+        INSERT INTO equipment_error_message(order_id,room_id,equipment_type_id,equipment_id,work_project_id,
+        error_photo,error_message,advice_message,create_time,work_status,deleted)
+        VALUES (#{orderId},#{roomId},#{equipmentTypeId},#{equipmentId},#{workProjectId},
+        #{errorPhoto},#{errorMessage},#{adviceMessage},#{createTime},#{workStatus},#{deleted})
+    </insert>
+
+    <!-- 查询异常信息 -->
+    <select id="findErrorMessage" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage"
+            resultMap="errorMessageMap">
+        select * from equipment_error_message where order_id = #{orderId} AND equipment_id = #{equipmentId} AND work_project_id = #{workProjectId} and deleted = 0
+    </select>
+
+    <!-- 根据id查询异常信息 -->
+    <select id="findErrorMessageById" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage"
+            resultMap="errorMessageMap">
+        select * from equipment_error_message where id = #{id} and deleted = 0
+    </select>
+
+    <!--- 修改异常信息 -->
+    <update id="updateErrorMessage" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage">
+        UPDATE equipment_error_message SET error_photo = #{errorPhoto},error_message = #{errorMessage},
+        advice_message = #{adviceMessage},create_time = #{createTime}
+    </update>
+
+    <!-- 查询历史问题 -->
+    <select id="queryHistoryProblemList" parameterType="com.kexin.dkt.core.entity.operation.EquipmentErrorMessage"
+        resultMap="errorMessageMap">
+        select *  FROM equipment_error_message
+        where  deleted = 0
+        <if test="orderId != 0">
+            and order_id = #{orderId}
+        </if>
+        <if test="roomId != 0">
+            and room_id = #{roomId}
+        </if>
+        <if test="equipmentTypeId != 0">
+            and equipment_type_id = #{equipmentTypeId}
+        </if>
+        <if test="equipmentId != 0">
+            and equipment_id = #{equipmentId}
+        </if>
+        <if test="workProjectId != 0">
+            and work_project_id = #{workProjectId}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 完成此设备类型 -->
+    <update id="finishEquipmentType" parameterType="com.kexin.dkt.core.entity.operation.EquipmentTypeStatus">
+        INSERT INTO equipment_type_status(order_id,equipment_type_id,finish_status,deleted)
+        VALUES(#{orderId},#{equipmentTypeId},#{finishStatus},#{deleted})
+    </update>
+
+    <!-- 完成此电房 -->
+    <update id="finishElectricRoom" parameterType="com.kexin.dkt.core.entity.operation.EquipmentTypeStatus">
+        INSERT INTO electric_room_status(order_id,room_id,finish_status,deleted)
+        VALUES(#{orderId},#{roomId},#{finishStatus},#{deleted})
+    </update>
+
+    <!-- 完成任务 -->
+    <update id="customerSignature" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder">
+        UPDATE operation_maintenance_order SET order_type = #{orderType} , date_photo = #{datePhoto} , signature_photo = #{signaturePhoto} ,
+        work_report_one = #{workReportOne} WHERE order_id = #{orderId}
+    </update>
+
+    <!-- 查询时间段内客户工单列表 -->
+    <select id="findOrderByTime" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.*
+        from operation_maintenance_order omo
+        where omo.deleted = 0
+        <if test="groupName != null">
+            and omo.engineer = #{groupName}
+        </if>
+        and omo.planned_time LIKE CONCAT(#{endTime},'%')
+        ORDER BY omo.planned_time ASC
+    </select>
+
+    <!-- 查询一个月的日期 -->
+    <select id="findMonthTime" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        SELECT DATE_FORMAT(RepDate,'%Y-%m-%d') AS day_time FROM req_date
+        where repDate LIKE CONCAT(#{monthTime},'%')
+        ORDER BY repDate ASC
+    </select>
+
+    <!-- 新增工单/orderType 初始化为待派工 状态1 -->
+    <insert id="addOrder" parameterType="map">
+        insert into operation_maintenance_order(service_type,customer_id,project_id,engineer,planned_time,oper_products_id,area_id,
+        order_type,order_code,order_project_name,operator,project_detail_address,equipment_info,contacts,phone,salesman,salesman_phone,update_time,deleted)
+        VALUES (#{serviceType},#{customerId},#{projectId},#{groupName},#{executeTime},#{oper_products_id},#{area_id},#{order_type},#{orderCode},#{project_name},#{operator},
+        #{project_detail_address},#{equipment_info},#{contacts},#{phone},#{salesman},#{salesman_phone},#{update_time},0)
+    </insert>
+
+    <!-- 查询报告列表信息 -->
+    <select id="findReportList" parameterType="map"
+            resultMap="orderResultMap">
+        select * from operation_maintenance_order
+        where order_type in (3,4)
+        <if test="groupName !=null and groupName != ''">
+            and engineer = #{groupName}
+        </if>
+        ORDER BY planned_time DESC
+    </select>
+
+    <!-- 根据用户id查询分组名 -->
+    <select id="findGroupByUserId" parameterType="map"
+            resultType="map">
+        select omg.* from operation_maintenance_group omg,basic_user_info bui
+        where omg.operation_group_engineer = bui.userinfo_id
+        and bui.sec_user_id = #{userId}
+    </select>
+
+    <!-- 按条件查询工单列表 -->
+    <select id="findOrderListLike" parameterType="map"
+            resultMap="orderResultMap">
+        select omo.* from operation_maintenance_order omo
+        where omo.deleted = 0
+        <if test="orderType !=null and orderType != 0">
+            and omo.order_type = #{orderType}
+        </if>
+        <if test="serviceType !=null and serviceType != 0">
+            and omo.service_type = #{serviceType}
+        </if>
+        <if test="queryTime !=null and queryTime != ''">
+            and omo.planned_time LIKE CONCAT(#{queryTime},'%')
+        </if>
+        <if test="queryValue !=null and queryValue != ''">
+            and (omo.order_code LIKE CONCAT('%',#{queryValue},'%') OR omo.order_project_name LIKE  CONCAT('%',#{queryValue},'%'))
+        </if>
+        <if test="queryType !=null and queryType == 'overTime'">
+            and NOW() > omo.planned_time and omo.planned_time NOT LIKE CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),'%')
+        </if>
+        ORDER BY omo.planned_time DESC
+    </select>
+
+    <!-- 添加工单记录信息 -->
+    <insert id="addOrderRecords" parameterType="map">
+          INSERT INTO operation_records(order_code,operation_people,operation_time,operation_content,status)
+        VALUES(#{orderCode},#{operationPeople},#{operationTime},#{operationContent},#{status})
+    </insert>
+
+    <!-- 修改工单类型 -->
+    <update id="updateOrder" parameterType="com.kexin.dkt.core.entity.operation.OperationMaintenanceOrder">
+        UPDATE operation_maintenance_order set order_type = #{orderType} where order_id = #{orderId}
+    </update>
+
+    <!-- 修改工单分组 -->
+    <update id="updateGroup" parameterType="map">
+        UPDATE operation_maintenance_order set engineer = #{groupName},planned_time = #{executeTime},
+        order_type = #{orderType} where order_id = #{orderId}
+    </update>
+
+    <!-- 主管评价 -->
+    <update id="managerRemark" parameterType="map">
+        UPDATE operation_maintenance_order set d_evaluate_level = #{dEvaluateLevel},d_evaluate_content = #{dEvaluateContent}
+        ,order_type = 4 where order_id = #{orderId}
+    </update>
+
+    <!-- 查询运维轨迹 -->
+    <select id="orderLocus" parameterType="map"
+            resultType="map">
+        select operation_content,operation_time from operation_records
+        where order_code = #{orderCode} ORDER BY `status` ASC, operation_time ASC
+    </select>
+
+    <!-- 查询轨迹状态数量 -->
+    <select id="findRecordsTypeCount" parameterType="map"
+            resultType="java.lang.Integer">
+        SELECT count(id) from operation_records WHERE order_code = #{orderCode} and status = #{status}
+    </select>
+</mapper>

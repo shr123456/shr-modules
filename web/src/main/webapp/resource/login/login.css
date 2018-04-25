@@ -1,0 +1,269 @@
+@charset "utf-8";
+
+/*登陆页面*/
+html{
+	height:100%;
+}
+body {
+/*	background:red;*/
+	height:100%;
+
+/*	width:100%;*/
+/*	height:600px;*/
+
+}
+/*.login-bg{
+	FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#ebab65,endColorStr=#aa6316); /!*IE 6 7 8*!/
+	background: -ms-linear-gradient(top, #ebab65,#aa6316);        /!* IE 10 *!/
+	background:-moz-linear-gradient(top,#ebab65,#aa6316);/!*火狐*!/
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#ebab65), to(#aa6316));/!*谷歌*!/
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ebab65), to(#aa6316));      /!* Safari 4-5, Chrome 1-9*!/
+	background: -webkit-linear-gradient(top, #ebab65, #aa6316);   /!*Safari5.1 Chrome 10+*!/
+	background: -o-linear-gradient(top, #ebab65, #aa6316);  /!*Opera 11.10+*!/
+	height: 450px;
+}*/
+.login-bg{
+	FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#175cbc,endColorStr=#05244f); /*IE 6 7 8*/
+	background: -ms-linear-gradient(top, #175cbc,#05244f);        /* IE 10 */
+	background:-moz-linear-gradient(top,#175cbc,#05244f);/*火狐*/
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#175cbc), to(#05244f));/*谷歌*/
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#175cbc), to(#05244f));      /* Safari 4-5, Chrome 1-9*/
+	background: -webkit-linear-gradient(top, #175cbc,#05244f);   /*Safari5.1 Chrome 10+*/
+	background: -o-linear-gradient(top, #175cbc,#05244f);  /*Opera 11.10+*/
+	height: 450px;
+}
+.w1{
+	width: 1200px;
+	margin: 0 auto;
+}
+
+
+.wrapper-login{	
+}
+.header-logo{
+	height: 50px;
+	padding: 10px 0;
+	background: #384250;
+}
+.header-logo .w1{
+	width: 1200px;
+	margin: 0 auto;
+}
+.loginLogo{
+	height:100px;
+	background:url(images/loginLogo.png) 50px 50px no-repeat;
+
+}
+.login-bg{
+	text-align: center;
+	margin-left: -250px;
+}
+.login-bg img{
+	height: 100%;
+}
+h1.logo{
+	font-size: 18px;
+}
+.login{
+	position:absolute;
+	width:350px;
+	height: 328px;
+/*	background: #ffffff;*/
+	background-color: rgba(0,0,0,0.2);
+	left:50%;
+	top:310px;
+	margin:-180px 0 0 55px;
+	/*border-radius:15px;*/
+	box-shadow: 0 10px 10px rgba(0,0,0,0.22);
+}
+.login-form h1{
+	height:30px;
+	margin-top:20px;
+	/*padding-left:30px;*/
+	text-align: center;
+	color:#fff;
+	font-size:20px;
+	margin-bottom:5px;
+}
+.login-form  .errormsg{
+	height:20px;
+	line-height:20px;
+	color:red;
+	margin:-10px 0 4px 58px;
+}
+.login-form  .input-group{
+	margin-bottom:20px;
+	padding-right: 14px;
+}
+.login-form  .input-group label{
+	display:inline-block;
+	width:60px;
+	text-align:right;
+	margin-right: 10px;
+}
+.login-form  .input-group input{
+	width:200px;
+	/*border:1px solid #cccccc;
+	border-radius:5px;*/
+	border: none;
+	background-color: transparent;
+
+	border-bottom: 1px solid #cccccc;
+	padding:5px;
+}
+.login-form  .input-group .btn{
+	margin-right:20px;
+}
+
+.loginBtn{
+	display: inline-block;
+	height: 40px;
+	width: 244px;
+	font-size: 18px;
+	line-height:40px;
+	/*width:100%;*/
+	/*background:#5a98de;*/
+	background-color: transparent;
+	color:#ffffff;
+	border-radius:27px;
+	border: 1px solid #deb871;
+}
+/*.loginBtn:hover{
+	color:#ffffff;
+	background:#4c88cb;
+}*/
+
+
+
+.copyright{
+	text-align:center;
+	color:#666666;
+	position:absolute;
+	width:100%;
+	bottom:50px;
+}
+
+
+/*.footer{background: #eee; text-align: center;color: #333333;margin-bottom: -20px;border: none;}*/
+/*.footerIn{background: #384250;color: #333333;margin: 20px auto;border: none;}*/
+/*.footerBody{}*/
+/*.footerLogo{padding:20px 0; border-bottom: 1px solid #ddd;margin:0 150px; }*/
+/*.footerIn ul{overflow: hidden;padding: 20px 0; }*/
+/*.footerIn ul li{ opacity: 0.8;}*/
+/*.footerIn ul li span{display: block;margin: 0 auto;margin-bottom: 10px;color: #fff}*/
+/*.footerIn ul li p{opacity: 0.8;line-height: 25px; }*/
+/*.footerCopyright{ padding: 15px 0; line-height: 25px;opacity: 0.8}*/
+/*.footerCopyright img{ margin-bottom: -5px;margin-right: 5px;opacity: 1}*/
+.footerIn{width: 100%;height: 160px;background:#384250}
+.footerIn ul{margin-top: 20px ;color: #fff}
+.footerIn li {padding:5px}
+.footerIn p{text-align: center;padding-top: 10px;color:#fefefe;}
+.footerIn dl{padding:15px;margin: 0 auto}
+
+.footerIn .footerBody>div{
+	width: 33%;
+}
+
+
+
+/*--------修复忘记密码----------*/
+.password:hover{
+	color: #0e90d2;
+;
+}
+
+.weChat{
+	text-align: right;
+	color:#0e90d2;
+	padding: 6px 64px 10px 20px;
+	background: url(images/wechat.png) no-repeat 214px center;
+	background-size:20px;
+	line-height: 24px;
+	cursor: pointer;
+}
+
+
+.weChat2 {
+	text-align: right;
+	color:#0e90d2;
+	padding: 6px 64px 10px 20px;
+	background-size:20px;
+	line-height: 24px;
+	cursor: pointer;
+}
+
+.qrCode{
+	text-align: center;
+	padding-top: 10px;
+}
+.loginCont{
+	color: #ffffff;
+	font-size: 16px;
+	display: inline-block;
+}
+.loginCont li{
+	padding: 0 55px;
+	float: left;
+	margin: 20px 0;
+	cursor: pointer;
+
+}
+.loginCont li:first-child{
+	border-right: 1px solid #deb871;
+}
+
+.phoneEle{
+	color: #ffffff;
+	padding: 10px 0;
+}
+.phoneEle span{
+	color: #0e90d2;
+}
+
+
+.wechatIn{
+	position: fixed;
+	left: 0;top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(1, 13, 18, 0.9);
+	z-index: 9999;
+	color: #ffffff;
+	font-size: 14px;
+}
+
+
+.wechatIn2{
+	position: fixed;
+	left: 0;top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(1, 13, 18, 0.9);
+	z-index: 9999;
+	color: #ffffff;
+	font-size: 14px;
+}
+
+
+.wechatLogin{
+	width: 400px;
+	height: 350px;
+	background:rgba(2, 2, 10, 0.6);
+	border-radius: 8px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -200px;
+	margin-top: -200px;
+	text-align: center;
+}
+
+.closeLogin{
+	text-align: right;padding: 10px 30px 10px 10px;cursor: pointer;font-size: 14px;
+}
+
+.closeLogin2{
+	text-align: right;padding: 10px 30px 10px 10px;cursor: pointer;font-size: 14px;
+}
+
+
